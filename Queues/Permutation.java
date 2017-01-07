@@ -8,10 +8,14 @@
  *  Implementation Permutation class from Programming assignment week 2 for
  *  Algorithms part 1 course. Program reads all strings from file and based
  *  on a given integer 0 < k <= n, prints k values in random order. 
+ * 
+ *  Update:
+ *   - added reservoir sampling
  *
  ******************************************************************************/
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Permutation {
     
@@ -19,8 +23,16 @@ public class Permutation {
         RandomizedQueue<String> q = new RandomizedQueue<String>();
         int k = Integer.parseInt(args[0]);
         
-        while (!StdIn.isEmpty()) {
-            q.enqueue(StdIn.readString());
+        for (int i = 0; !StdIn.isEmpty(); i++) {
+            String s = StdIn.readString();
+            // keep the first k elements
+            if (i <= k) {
+                q.enqueue(s);
+            }
+            else if (StdRandom.uniform() <  (double) k / i) { // keep new element with probability size of array / i
+                q.dequeue();
+                q.enqueue(s);
+            }
         }
         for (int i = 0; i < k; i++) {
             StdOut.println(q.dequeue());
