@@ -10,7 +10,8 @@
  *  on a given integer 0 < k <= n, prints k values in random order. 
  * 
  *  Update:
- *   - added reservoir sampling
+ *  - added reservoir sampling -> it is technique that gives every element from
+ *  input stream equal probability to be put in reservoir of the size k
  *
  ******************************************************************************/
 import edu.princeton.cs.algs4.StdIn;
@@ -23,13 +24,13 @@ public class Permutation {
         RandomizedQueue<String> q = new RandomizedQueue<String>();
         int k = Integer.parseInt(args[0]);
         
-        for (int i = 0; !StdIn.isEmpty(); i++) {
+        for (int i = 1; !StdIn.isEmpty(); i++) {
             String s = StdIn.readString();
-            // keep the first k elements
+            // accept first k elements
             if (i <= k) {
                 q.enqueue(s);
-            }
-            else if (StdRandom.uniform() <  (double) k / i) { // keep new element with probability size of array / i
+            } // calculate probability for ith element to replace one from [1..k] 
+            else if (StdRandom.uniform() <  (double) k/ i) { // keep new element with probability size of reservoir / i
                 q.dequeue();
                 q.enqueue(s);
             }
