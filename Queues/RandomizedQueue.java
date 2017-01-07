@@ -62,7 +62,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         Item ret;
         int randomIndex = StdRandom.uniform(index);
         
-        if(randomIndex == index - 1) {
+        if (randomIndex == index - 1) {
             ret = queue[randomIndex];
             queue[randomIndex] = null;
         }
@@ -92,17 +92,34 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     
     private class RandomizedQueueIterator implements Iterator<Item> {
-        private int current = 0;
+        private Item[] q;
+        private int cur, size;
+        
+        public RandomizedQueueIterator() {
+            q = (Item[]) new Object[index];
+            size = index;
+            cur = 0;
+            for (int i = 0; i < size; i++) {
+                q[i] = queue[i];
+            }
+  
+        }
         
         public boolean hasNext() {
-            return current < index;
+            return size > 0;
         }
         
         public Item next() {
-            if (queue.length == 0) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return queue[current++];
+            int k = StdRandom.uniform(size);
+            Item ret = q[k];
+            q[k] = q[size - 1];
+            q[size - 1] = null;
+            cur++;
+            size--;
+            return ret;
         }
         
         public void remove() {
