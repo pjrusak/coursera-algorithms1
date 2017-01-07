@@ -25,7 +25,6 @@ public class Permutation {
                 q.enqueue(item);
             }
         }
-        StdOut.println();
         for (int i = 0; i < k; i++) {
             StdOut.println(q.dequeue());
         }
