@@ -4,9 +4,12 @@
  *  Execution:    java BruteCollinearPoints
  *  Dependencies: none
  *  
- *  Brute force method to find every maximal line segment that connects a subset
+ *  Brute force method to find every line segment that connects a subset
  *  of 4 or more of the points.
  *  For use on Coursera, Algorithms Part I programming assignment.
+ * 
+ *  Remark: Program won't work properly if in input file are more than 4 
+ *  collinear points
  *
  ******************************************************************************/
 import edu.princeton.cs.algs4.ResizingArrayQueue;
@@ -33,36 +36,28 @@ public class BruteCollinearPoints {
         
         // calculate line segments      
         ls = new ResizingArrayQueue<LineSegment>();
-        ResizingArrayQueue<Double> slopes = new ResizingArrayQueue<Double>();
-        boolean isInLineArray = false;
         
-        // iterate over all tupples (p, q, r, s) from Points[]
+        // iterate over all tupples (p, q, r, s) from points[]
         for (int p = 0; p < len - 3; p++) {
             for (int q = p + 1; q < len - 2; q++) {
                 for (int r = q + 1; r < len - 1; r++) {
                     for (int s = r + 1; s < len; s++) {
                         if (isCollinear(points[p], points[q], points[r], points[s])) {
-                            double slopePS = points[p].slopeTo(points[s]);
+                            Point[] line = {points[p], points[q], points[r], points[s]};
+                            Point min = points[p]; 
+                            Point max = points[s];
                             
-                            if (!isInLineArray) {
-                                isInLineArray = false;
-                                slopes.enqueue(slopePS);
-                                ls.enqueue(new LineSegment(points[p], points[s]));
+                            // find min, max in set p, q, r, s
+                            for (Point cur : line) {
+                                if (cur.compareTo(min) < 0) min = cur;
+                                if (cur.compareTo(max) > 0) max = cur;
                             }
-                            else {
-                                for (double i : slopes) {
-                                    if (i == slopePS) {
-                                        isInLineArray = true;
-                                        break;
-                                    }
-                                }
-                            }
+                            ls.enqueue(new LineSegment(min, max));     
                         }
                     }
                 }
             }
         }
- 
     }  
     
     /* the number of line segments */
@@ -77,8 +72,7 @@ public class BruteCollinearPoints {
         
         for (LineSegment l : ls) {
             ret[i++] = l;
-        }
-        
+        }   
         return ret;
     }
     

@@ -37,7 +37,6 @@ class CollinearPointsTest {
        
         // print and draw the line segments
         BruteCollinearPoints collinear = new BruteCollinearPoints(points);
-        StdOut.println(collinear.numberOfSegments());
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();

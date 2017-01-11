@@ -47,14 +47,5 @@ class PointTest {
             System.out.println("slopeOrder to p: " + p + " " + p.slopeOrder().compare(q, r));
             System.out.println();
         }
-        
-        // draw the points
-        //StdDraw.enableDoubleBuffering();
-        //StdDraw.setXscale(0, 32768);
-        //StdDraw.setYscale(0, 32768);
-        //for (Point p : points) {
-        //   p.draw();
-        //}
-        //StdDraw.show();
     }
 }
