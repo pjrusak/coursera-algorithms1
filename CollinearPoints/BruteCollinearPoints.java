@@ -23,7 +23,6 @@ public class BruteCollinearPoints {
             throw new java.lang.NullPointerException();
         }
         int len = points.length; // number of points
-        assert (len >= 4) : "Points array hasn't got enough points. Minimal number of points is 4.";
         
         for (int i = 0; i < len; i++) {
             if (points[i] == null)
@@ -48,9 +47,9 @@ public class BruteCollinearPoints {
                             Point max = points[s];
                             
                             // find min, max in set p, q, r, s
-                            for (Point cur : line) {
-                                if (cur.compareTo(min) < 0) min = cur;
-                                if (cur.compareTo(max) > 0) max = cur;
+                            for (int cur = 0; cur < line.length; cur++) {
+                                if (line[cur].compareTo(min) < 0) min = line[cur];
+                                if (line[cur].compareTo(max) > 0) max = line[cur];
                             }
                             ls.enqueue(new LineSegment(min, max));     
                         }
@@ -58,7 +57,7 @@ public class BruteCollinearPoints {
                 }
             }
         }
-    }  
+    }
     
     /* the number of line segments */
     public int numberOfSegments() {

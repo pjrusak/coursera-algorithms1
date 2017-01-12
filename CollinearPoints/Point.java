@@ -90,7 +90,7 @@ public class Point implements Comparable<Point> {
         /* YOUR CODE HERE */
         if (y < that.y) return -1;
         else if (y > that.y) return 1;
-        else if(x < that.x) return -1;
+        else if (x < that.x) return -1;
         else if (x > that.x) return 1;
         else return 0;
     }
@@ -108,10 +108,10 @@ public class Point implements Comparable<Point> {
 
     private class BySlope implements Comparator<Point> {
         public int compare(Point p, Point q) {
-            double slopeDist = slopeTo(p) - slopeTo(q);
+            int res = Double.compare(slopeTo(p), slopeTo(q));
             
-            if (slopeDist < 0.0) return -1;
-            else if (slopeDist > 0.0) return 1;
+            if (res < 0) return -1;
+            else if (res > 0) return 1;
             else return 0;
         }
     }
