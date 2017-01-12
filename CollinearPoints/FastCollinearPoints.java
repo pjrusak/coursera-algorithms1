@@ -9,12 +9,13 @@
  *  For use on Coursera, Algorithms Part I programming assignment.
  *
  ******************************************************************************/
-import edu.princeton.cs.algs4.ResizingArrayQueue;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
-    private ResizingArrayQueue<LineSegment> ls; 
+    private ArrayList<LineSegment> ls; 
    
     /* finds all line segments containing 4 or more points */
     public FastCollinearPoints(Point[] points) {
@@ -33,46 +34,42 @@ public class FastCollinearPoints {
         }       
         
         // calculate line segments      
-        ls = new ResizingArrayQueue<LineSegment>();
-        
+        ls = new ArrayList<LineSegment>();
+        ArrayList<Point> collinear = new ArrayList<Point>();
+
         for (int p = 0; p < len - 1; p++) {
             StdOut.println(points[p] + ": index = " + p);
             StdOut.println();
           
             // sort by slope from originating point p
             Arrays.sort(points, points[p].slopeOrder());
-                                    
-            double slopeFirst = points[0].slopeTo(points[1]);
-            double slopeCur;
-            int count = 0;
-            
+                        
+            double slopePrev = Double.POSITIVE_INFINITY;
             debugFastCollinear(points);
                     
-            for (int q = 1; q < len; q++) {
-                slopeCur = points[0].slopeTo(points[q]);
-                if (Double.compare(slopeFirst, slopeCur) == 0) count++;
-                else {
+            for (int q = 0; q < len; q++) {
+                if (Double.compare(slopePrev, points[q].slopeTo(points[0])) != 0 || q == 0 || q == len - 1) {
                     // at least three additional points with originating creates line
-                    if (count >= 3) {
-                        StdOut.println("Segment found: len = " + count);
-                        
-                        // we have to sort this points and get end points
+                    StdOut.print("Collinear: ");
+                    for (Point g : collinear) {
+                        StdOut.print(g + " ");
                     }
-                    slopeFirst = slopeCur;
-                    count = 1;
-                }
-                StdOut.println(points[q] + " " + points[0].slopeTo(points[q]) + " count: " + count);       
+                    StdOut.println();
+                    
+                    if (collinear.size() >= 3) {
+                        StdOut.println("Segment found: len = " + collinear.size() + " q = " + q);
+                        collinear.add(points[0]);
+                        // we have to sort this points and get end points
+                        Collections.sort(collinear);
+                        ls.add(new LineSegment(collinear.get(0), collinear.get(collinear.size() - 1)));        
+                    }
+                    collinear.clear();
+                }            
+                collinear.add(points[q]);
+                slopePrev = points[q].slopeTo(points[0]);
+                StdOut.println(points[q] + " " + points[0].slopeTo(points[q]) + " count: " + collinear.size());             
             }
-            
-            // only one segment, so we don't have to look for another lines
-            if (count != 1) {
-               StdOut.println("Segment found: len = " + count);
-               Arrays.sort(points);
-               ls.enqueue(new LineSegment(points[0], points[len - 1]));
-               break;
-            }
-                
-            // find every segment of four or more points
+            collinear.clear();
             StdOut.println();
         }
     }

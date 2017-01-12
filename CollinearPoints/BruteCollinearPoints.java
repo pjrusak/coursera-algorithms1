@@ -12,10 +12,11 @@
  *  collinear points
  *
  ******************************************************************************/
-import edu.princeton.cs.algs4.ResizingArrayQueue;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BruteCollinearPoints {
-    private ResizingArrayQueue<LineSegment> ls;
+    private ArrayList<LineSegment> ls;
        
     /* finds all line segments containing 4 points */
     public BruteCollinearPoints(Point[] points) {
@@ -34,24 +35,16 @@ public class BruteCollinearPoints {
         }       
         
         // calculate line segments      
-        ls = new ResizingArrayQueue<LineSegment>();
+        ls = new ArrayList<LineSegment>();
         
+        Arrays.sort(points); 
         // iterate over all tupples (p, q, r, s) from points[]
         for (int p = 0; p < len - 3; p++) {
             for (int q = p + 1; q < len - 2; q++) {
                 for (int r = q + 1; r < len - 1; r++) {
                     for (int s = r + 1; s < len; s++) {
                         if (isCollinear(points[p], points[q], points[r], points[s])) {
-                            Point[] line = {points[p], points[q], points[r], points[s]};
-                            Point min = points[p]; 
-                            Point max = points[s];
-                            
-                            // find min, max in set p, q, r, s
-                            for (int cur = 0; cur < line.length; cur++) {
-                                if (line[cur].compareTo(min) < 0) min = line[cur];
-                                if (line[cur].compareTo(max) > 0) max = line[cur];
-                            }
-                            ls.enqueue(new LineSegment(min, max));     
+                            ls.add(new LineSegment(points[p], points[s]));
                         }
                     }
                 }
@@ -81,8 +74,8 @@ public class BruteCollinearPoints {
         double slopePR = p.slopeTo(r);
         double slopePS = p.slopeTo(s);
         
-        if (slopePQ != slopePR) return false;
-        else if (slopePQ != slopePS) return false;
-        else return true; 
+        if (Double.compare(slopePQ, slopePR) == 0 && 
+            Double.compare(slopePQ, slopePS) == 0) return true;
+        return false; 
     }
 }
