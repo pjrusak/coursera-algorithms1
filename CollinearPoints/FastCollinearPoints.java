@@ -62,7 +62,6 @@ public class FastCollinearPoints {
             
             addLine(slopes, origin, slopeCur, collinear);
             collinear.clear();      
-            StdOut.println();
         }
     }
     
