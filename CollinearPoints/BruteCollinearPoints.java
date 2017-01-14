@@ -4,15 +4,19 @@
  *  Execution:    java BruteCollinearPoints
  *  Dependencies: none
  *  
- *  Brute force method to find every maximal line segment that connects a subset
+ *  Brute force method to find every line segment that connects a subset
  *  of 4 or more of the points.
  *  For use on Coursera, Algorithms Part I programming assignment.
+ * 
+ *  Remark: Program won't work properly if in input file are more than 4 
+ *  collinear points
  *
  ******************************************************************************/
-import edu.princeton.cs.algs4.ResizingArrayQueue;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BruteCollinearPoints {
-    private ResizingArrayQueue<LineSegment> ls;
+    private ArrayList<LineSegment> ls;
        
     /* finds all line segments containing 4 points */
     public BruteCollinearPoints(Point[] points) {
@@ -20,7 +24,6 @@ public class BruteCollinearPoints {
             throw new java.lang.NullPointerException();
         }
         int len = points.length; // number of points
-        assert (len >= 4) : "Points array hasn't got enough points. Minimal number of points is 4.";
         
         for (int i = 0; i < len; i++) {
             if (points[i] == null)
@@ -32,38 +35,23 @@ public class BruteCollinearPoints {
         }       
         
         // calculate line segments      
-        ls = new ResizingArrayQueue<LineSegment>();
-        ResizingArrayQueue<Double> slopes = new ResizingArrayQueue<Double>();
-        boolean isInLineArray = false;
+        ls = new ArrayList<LineSegment>();
+        Point[] pointsCopy = Arrays.copyOf(points, len);
         
-        // iterate over all tupples (p, q, r, s) from Points[]
+        Arrays.sort(pointsCopy); 
+        // iterate over all tupples (p, q, r, s) from points[]
         for (int p = 0; p < len - 3; p++) {
             for (int q = p + 1; q < len - 2; q++) {
                 for (int r = q + 1; r < len - 1; r++) {
                     for (int s = r + 1; s < len; s++) {
-                        if (isCollinear(points[p], points[q], points[r], points[s])) {
-                            double slopePS = points[p].slopeTo(points[s]);
-                            
-                            if (!isInLineArray) {
-                                isInLineArray = false;
-                                slopes.enqueue(slopePS);
-                                ls.enqueue(new LineSegment(points[p], points[s]));
-                            }
-                            else {
-                                for (double i : slopes) {
-                                    if (i == slopePS) {
-                                        isInLineArray = true;
-                                        break;
-                                    }
-                                }
-                            }
+                        if (isCollinear(pointsCopy[p], pointsCopy[q], pointsCopy[r], pointsCopy[s])) {
+                            ls.add(new LineSegment(pointsCopy[p], pointsCopy[s]));
                         }
                     }
                 }
             }
         }
- 
-    }  
+    }
     
     /* the number of line segments */
     public int numberOfSegments() {
@@ -77,8 +65,7 @@ public class BruteCollinearPoints {
         
         for (LineSegment l : ls) {
             ret[i++] = l;
-        }
-        
+        }   
         return ret;
     }
     
@@ -88,8 +75,8 @@ public class BruteCollinearPoints {
         double slopePR = p.slopeTo(r);
         double slopePS = p.slopeTo(s);
         
-        if (slopePQ != slopePR) return false;
-        else if (slopePQ != slopePS) return false;
-        else return true; 
+        if (Double.compare(slopePQ, slopePR) == 0 && 
+            Double.compare(slopePQ, slopePS) == 0) return true;
+        return false; 
     }
 }

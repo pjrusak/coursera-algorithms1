@@ -90,7 +90,7 @@ public class Point implements Comparable<Point> {
         /* YOUR CODE HERE */
         if (y < that.y) return -1;
         else if (y > that.y) return 1;
-        else if(x < that.x) return -1;
+        else if (x < that.x) return -1;
         else if (x > that.x) return 1;
         else return 0;
     }
@@ -108,10 +108,10 @@ public class Point implements Comparable<Point> {
 
     private class BySlope implements Comparator<Point> {
         public int compare(Point p, Point q) {
-            double slopeDist = slopeTo(p) - slopeTo(q);
+            int res = Double.compare(slopeTo(p), slopeTo(q));
             
-            if (slopeDist < 0.0) return -1;
-            else if (slopeDist > 0.0) return 1;
+            if (res < 0) return -1;
+            else if (res > 0) return 1;
             else return 0;
         }
     }
@@ -158,11 +158,11 @@ public class Point implements Comparable<Point> {
         assert (p7.compareTo(p8) == 0) : p7 + " " + p8;
         
         
-        assert (p7.slopeTo(p8) == Double.NEGATIVE_INFINITY) : "Wrong value for degraded line";
-        assert (p4.slopeTo(p9) == Double.POSITIVE_INFINITY) : "Wrong value for vertical line";
-        assert (p4.slopeTo(p5) == +0.0) : "Wrong value for horizontal line";
-        assert (p1.slopeTo(p2) == 0.5);
-        assert (p10.slopeTo(p11) == -0.5);
+        assert (Double.compare(p7.slopeTo(p8), Double.NEGATIVE_INFINITY) == 0) : "Wrong value for degraded line";
+        assert (Double.compare(p4.slopeTo(p9), Double.POSITIVE_INFINITY) == 0) : "Wrong value for vertical line";
+        assert (Double.compare(p4.slopeTo(p5), +0.0) == 0) : "Wrong value for horizontal line";
+        assert (Double.compare(p1.slopeTo(p2), 0.5) == 0);
+        assert (Double.compare(p10.slopeTo(p11), -0.5) == 0);
         
         
         assert (p4.slopeOrder().compare(p3, p5) < 0);
