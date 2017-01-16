@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
     private ArrayList<LineSegment> ls; 
@@ -33,12 +32,12 @@ public class FastCollinearPoints {
                     throw new java.lang.IllegalArgumentException();
             }
         }       
-        
-        // calculate line segments      
+              
         ls = new ArrayList<LineSegment>();
         Point[] pointsCopy = Arrays.copyOf(points, len);
         HashMap<Double, ArrayList<Point>> slopes = new HashMap<Double, ArrayList<Point>>(); 
 
+        // calculate line segments
         for (Point origin : points) {
             // sort by slope from originating point p
             Arrays.sort(pointsCopy, origin.slopeOrder());
@@ -53,14 +52,18 @@ public class FastCollinearPoints {
                     collinear.add(pointsCopy[q]);
                 } 
                 else {
-                    addLine(slopes, origin, slopePrev, collinear);
+                    if (collinear.size() >= 3) {
+                        addLine(slopes, origin, slopePrev, collinear);
+                    }
                     collinear.clear();
                     collinear.add(pointsCopy[q]);
                 }
                 slopePrev = slopeCur;
             }
             
-            addLine(slopes, origin, slopeCur, collinear);
+            if (collinear.size() >= 3) {
+                addLine(slopes, origin, slopeCur, collinear);
+            }
             collinear.clear();      
         }
     }
@@ -82,15 +85,11 @@ public class FastCollinearPoints {
     }
     
     private void addLine(HashMap<Double, ArrayList<Point>> slopes, Point origin, 
-                         double slopeCur, ArrayList<Point> collinear) {
-        
-        if (collinear.size() < 3) {
-            return;
-        }
-        collinear.add(origin);
+                         double slopeCur, ArrayList<Point> collinear) {       
         
         ArrayList<Point> lines = slopes.get(slopeCur);
-
+        
+        collinear.add(origin);
         Collections.sort(collinear);
         Point start = collinear.get(0);
         Point end = collinear.get(collinear.size() - 1);
@@ -102,9 +101,7 @@ public class FastCollinearPoints {
         } 
         else {
             // line has been added previously
-            for (Point p : lines) {
-                if (start.compareTo(p) == 0) return;
-            }
+            if (lines.contains(start)) return;
             lines.add(start);
         }
         ls.add(new LineSegment(start, end));
