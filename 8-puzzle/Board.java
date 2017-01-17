@@ -7,12 +7,15 @@
  *  Implementation of board object for program solving 8-puzzle
  *
  ******************************************************************************/
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
+import java.util.LinkedList;
 
-public class Board { //implements Iterable<Board> {
+public class Board {
+    private static int[][] goal; // goal board settings
     private final int[][] board;
-    private static int[][] goal;
     private final int dimension;
+    private int zeroI; // zero - ith position on board
+    private int zeroJ; // zero - jth position on board
     
     /* construct a board from an n-by-n array of blocks 
      * (where blocks[i][j] = block in row i, column j) */
@@ -28,6 +31,10 @@ public class Board { //implements Iterable<Board> {
             for (int j = 0; j < dimension; j++) {
                 board[i][j] = blocks[i][j];
                 goal[i][j] = arrayIndex(i, j);
+                if (blocks[i][j] == 0) {
+                    zeroI = i;
+                    zeroJ = j;
+                }
             }
         }
         goal[dimension - 1][dimension - 1] = 0; // blank tile on last position
@@ -79,8 +86,29 @@ public class Board { //implements Iterable<Board> {
     }
     
     /* a board that is obtained by exchanging any pair of blocks */
-    //public Board twin() {
-    //}
+    public Board twin() {
+        Board twin = new Board(board);
+        int i, j, iBis, jBis;
+        
+        do {
+            i = StdRandom.uniform(dimension);
+            j = StdRandom.uniform(dimension);
+
+        }
+        while (board[i][j] == 0);
+        
+        do {
+
+            iBis = StdRandom.uniform(dimension);
+            jBis = StdRandom.uniform(dimension);
+        }
+        while (board[i][j] == 0 || (i == iBis && j == jBis));
+          
+        int swap = twin.board[i][j];
+        twin.board[i][j] = twin.board[iBis][jBis];
+        twin.board[iBis][jBis] = swap;
+        return twin;
+    }
     
     /* does this board equal y? */
     public boolean equals(Object y) {
@@ -117,9 +145,39 @@ public class Board { //implements Iterable<Board> {
     }
     
     /* all neighboring boards */
-    //public Iterable<Board> neighbors() {
-    //    return new BoardIterator();
-    //}
+    public Iterable<Board> neighbors() {
+        LinkedList<Board> neighList = new LinkedList<Board>();
+        Board b = null;
+        // move upper tile to blank
+        if (zeroI > 0) {
+            b = new Board(board);
+            b.board[zeroI][zeroJ] = b.board[zeroI - 1][zeroJ];
+            b.board[zeroI - 1][zeroJ] = 0;
+            neighList.add(b);
+        }
+        // move bottom tile to blank
+        if (zeroI < dimension - 1) {
+            b = new Board(board);
+            b.board[zeroI][zeroJ] = b.board[zeroI + 1][zeroJ];
+            b.board[zeroI + 1][zeroJ] = 0;
+            neighList.add(b);
+        }
+        // move left tile to blank
+        if (zeroJ > 0) {
+            b = new Board(board);
+            b.board[zeroI][zeroJ] = b.board[zeroI][zeroJ - 1];
+            b.board[zeroI][zeroJ - 1] = 0;
+            neighList.add(b);
+        }
+        // move right tile to blank
+        if (zeroJ < dimension - 1) {
+            b = new Board(board);
+            b.board[zeroI][zeroJ] = b.board[zeroI][zeroJ + 1];
+            b.board[zeroI][zeroJ + 1] = 0;
+            neighList.add(b);
+        }
+        return neighList;
+    }
    
     private int manhattanDistance(int value, int i, int j) {
         value--;

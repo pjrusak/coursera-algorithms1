@@ -30,5 +30,17 @@ public class BoardTest {
         StdOut.println(initial.hamming());
         
         StdOut.println(initial.manhattan());
+        
+        
+        StdOut.println(initial.twin());
+        StdOut.println(initial.twin());
+        StdOut.println(initial.twin());
+        
+        Iterable<Board> neighbors = initial.neighbors();
+        
+        for (Board board : neighbors) {
+            StdOut.println(board);
+        }
+        
     }
 }
